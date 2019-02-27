@@ -34,17 +34,22 @@ export class User {
    * the user entered on the form.
    */
   login(accountInfo: any) {
-    let seq = this.api.post('login', accountInfo).share();
+    const data = `<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:urn=\"urn:sap-com:document:sap:soap:functions:mc-style\"> <soapenv:Header/> <soapenv:Body> <urn:ZsusrCheckLogonData> <Aliasname> </Aliasname> <AuthData></AuthData> <AuthMethod>P</AuthMethod> <ExtidType></ExtidType> <Language>EN</Language> <Password>${
+      accountInfo.password
+      }</Password> <UseNewException></UseNewException> <Userid>${
+      accountInfo.username
+      }</Userid> </urn:ZsusrCheckLogonData> </soapenv:Body></soapenv:Envelope>`;
+    let seq = this.api.post('saplogon/1.0/', data).share();
 
-    seq.subscribe((res: any) => {
-      // If the API returned a successful response, mark the user as logged in
-      if (res.status == 'success') {
+    seq.subscribe(
+      (res: any) => {
+        // If the API returned a successful response, mark the user as logged in
         this._loggedIn(res);
-      } else {
+      },
+      err => {
+        console.error('ERROR', err);
       }
-    }, err => {
-      console.error('ERROR', err);
-    });
+    );
 
     return seq;
   }
@@ -56,14 +61,17 @@ export class User {
   signup(accountInfo: any) {
     let seq = this.api.post('signup', accountInfo).share();
 
-    seq.subscribe((res: any) => {
-      // If the API returned a successful response, mark the user as logged in
-      if (res.status == 'success') {
-        this._loggedIn(res);
+    seq.subscribe(
+      (res: any) => {
+        // If the API returned a successful response, mark the user as logged in
+        if (res.status == 'success') {
+          this._loggedIn(accountInfo.username);
+        }
+      },
+      err => {
+        console.error('ERROR', err);
       }
-    }, err => {
-      console.error('ERROR', err);
-    });
+    );
 
     return seq;
   }
@@ -79,6 +87,6 @@ export class User {
    * Process a login/signup response to store user data
    */
   _loggedIn(resp) {
-    this._user = resp.user;
+    this._user = resp;
   }
 }

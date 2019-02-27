@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-import { Items } from '../../providers';
+import { PoItem } from '../../models/po-item';
+import { PoItemProvider } from '../../providers';
 
 @IonicPage()
 @Component({
@@ -9,10 +10,17 @@ import { Items } from '../../providers';
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
-  item: any;
+  currentItems: PoItem[];
+  poHeader: any;
 
-  constructor(public navCtrl: NavController, navParams: NavParams, items: Items) {
-    this.item = navParams.get('item') || items.defaultItem;
+  constructor(public navCtrl: NavController, navParams: NavParams, public poItem: PoItemProvider) {
+    this.poHeader = navParams.get('item');
+    this.poItem.getPoItemList(this.poHeader.Ebeln).subscribe(data => {
+      this.currentItems = data;
+    });
   }
 
+  doApprove(ponum: number, apprej: number) {
+    this.poItem.poApproval(ponum, apprej).subscribe();
+  }
 }

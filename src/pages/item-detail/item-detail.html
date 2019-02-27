@@ -1,18 +1,31 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{ item.name }}</ion-title>
+    <ion-title>PO Details - {{ poHeader.Ebeln }}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content>
-  <div class="item-profile" text-center #profilePic [style.background-image]="'url(' + item.profilePic + ')'">
-  </div>
+  <h2>{{poHeader.name}}</h2>
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of currentItems">
+      <ion-item *ngIf="item.Ebelp !== '00000'">
+        <h2>{{item.Ebeln}}</h2>
 
-  <div class="item-detail" padding>
-    <h2>{{item.name}}</h2>
-    <p>{{item.about}}</p>
-  </div>
+        <p>Item No.: {{item.Ebelp}}</p>
+        <p>Account assignment Category: {{item.Knttp}}</p>
+        <p>Material: {{item.Matnr}}</p>
+        <p>Short Text: {{item.Maktg}}</p>
+        <p>PO quantity: {{item.Menge}}</p>
+        <p>Order Unit: {{item.Meins}}</p>
+        <p>Delivery date: {{item.Eindt}}</p>
+        <p>Net Price: {{item.Netpr}}</p>
+        <button ion-button color="danger" (click)="doApprove(item.Ebelp,2)">Reject</button>
+        <button ion-button color="primary" (click)="doApprove(item.Ebelp,2)">Approve</button>
+      </ion-item>
+
+    </ion-item-sliding>
+  </ion-list>
 </ion-content>

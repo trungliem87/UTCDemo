@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, ModalController, NavController } from 'ionic-angular';
 
-import { Item } from '../../models/item';
-import { Items } from '../../providers';
+import { PoHeader } from '../../models/po-header';
+import { PoHeaderProvider } from '../../providers';
 
 @IonicPage()
 @Component({
@@ -10,10 +10,14 @@ import { Items } from '../../providers';
   templateUrl: 'list-master.html'
 })
 export class ListMasterPage {
-  currentItems: Item[];
+  currentItems: PoHeader[];
+  allItems: PoHeader[];
 
-  constructor(public navCtrl: NavController, public items: Items, public modalCtrl: ModalController) {
-    this.currentItems = this.items.query();
+  constructor(public navCtrl: NavController, public poHeader: PoHeaderProvider, public modalCtrl: ModalController) {
+    this.poHeader.getPoHeaderList().subscribe(data => {
+      this.currentItems = data;
+      this.allItems = data;
+    });
   }
 
   /**
@@ -22,33 +26,33 @@ export class ListMasterPage {
   ionViewDidLoad() {
   }
 
-  /**
-   * Prompt the user to add a new item. This shows our ItemCreatePage in a
-   * modal and then adds the new item to our data source if the user created one.
-   */
-  addItem() {
-    let addModal = this.modalCtrl.create('ItemCreatePage');
-    addModal.onDidDismiss(item => {
-      if (item) {
-        this.items.add(item);
-      }
-    })
-    addModal.present();
-  }
-
-  /**
-   * Delete an item from the list of items.
-   */
-  deleteItem(item) {
-    this.items.delete(item);
+  deleteItem() {
+    console.log('deleted poheader');
   }
 
   /**
    * Navigate to the detail page for this item.
    */
-  openItem(item: Item) {
+  openItem(item: PoHeader) {
     this.navCtrl.push('ItemDetailPage', {
-      item: item
+      item: item.Ebeln
     });
+  }
+
+  onChange(value) {
+    switch (value) {
+      case "rejected":
+        this.currentItems = this.allItems.filter(item => item.Status == "R");
+        break;
+      case "approved":
+        this.currentItems = this.allItems.filter(item => item.Status == "A");
+        break;
+      case "pending":
+        this.currentItems = this.allItems.filter(item => item.Status == "P");
+        break;
+      default:
+        this.currentItems = this.allItems;
+        break
+    }
   }
 }

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { IonicPage, NavController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, ToastController, AlertController } from 'ionic-angular';
 
-import { User } from '../../providers';
+import { User, Api } from '../../providers';
 import { MainPage } from '../';
 
 @IonicPage()
@@ -14,37 +14,57 @@ export class LoginPage {
   // The account fields for the login form.
   // If you're using the username field with or without email, make
   // sure to add it to the type
-  account: { email: string, password: string } = {
-    email: 'test@example.com',
-    password: 'test'
+  account: { username: string; password: string } = {
+    username: 'GUNDAA',
+    password: '2025!'
   };
 
   // Our translated text strings
   private loginErrorString: string;
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public user: User,
+    public api: Api,
     public toastCtrl: ToastController,
-    public translateService: TranslateService) {
-
-    this.translateService.get('LOGIN_ERROR').subscribe((value) => {
+    public translateService: TranslateService,
+    public alertController: AlertController
+  ) {
+    this.translateService.get('LOGIN_ERROR').subscribe(value => {
       this.loginErrorString = value;
-    })
+    });
   }
 
   // Attempt to login in through our User service
   doLogin() {
-    this.user.login(this.account).subscribe((resp) => {
-      this.navCtrl.push(MainPage);
-    }, (err) => {
-      this.navCtrl.push(MainPage);
-      // Unable to log in
-      let toast = this.toastCtrl.create({
-        message: this.loginErrorString,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+    this.user.login(this.account).subscribe(
+      resp => {
+        const msg = resp.n0ZsusrCheckLogonDataResponse.Message.Message;
+        if (msg) {
+          this.presentAlert(msg);
+        }
+        this.navCtrl.push(MainPage);
+      },
+      err => {
+        this.presentAlert(err);
+        // Unable to log in
+        let toast = this.toastCtrl.create({
+          message: this.loginErrorString,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      }
+    );
+  }
+
+  async presentAlert(info) {
+    const alert = await this.alertController.create({
+      title: 'Alert',
+      message: info,
+      buttons: ['OK']
     });
+
+    await alert.present();
   }
 }
