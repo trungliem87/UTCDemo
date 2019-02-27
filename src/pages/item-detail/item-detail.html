@@ -1,19 +1,17 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>PO Details - {{ poHeader.Ebeln }}</ion-title>
+    <ion-title>PO Details - {{ poHeader }}</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content>
-  <h2>{{poHeader.name}}</h2>
   <ion-list>
     <ion-item-sliding *ngFor="let item of currentItems">
       <ion-item *ngIf="item.Ebelp !== '00000'">
         <h2>{{item.Ebeln}}</h2>
-
         <p>Item No.: {{item.Ebelp}}</p>
         <p>Account assignment Category: {{item.Knttp}}</p>
         <p>Material: {{item.Matnr}}</p>

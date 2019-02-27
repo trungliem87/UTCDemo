@@ -31,7 +31,7 @@ export class PoItemProvider {
                   <Netpr></Netpr>
               </item>
             </Poitem>
-            <Ponumber>4500020800</Ponumber>
+            <Ponumber>${poHeader}</Ponumber>
         </urn:ZmobilePoItem>
       </soapenv:Body>
     </soapenv:Envelope>`;

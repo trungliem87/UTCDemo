@@ -38,9 +38,9 @@ app.route('/poitem/1.0/').post((req, res) => {
   res.send(content);
 })
 
-app.route('poapproval/1.0/').post((req, res) => {
-  const content = getConfig('src/assets/dummy/poapproval-0.xml'); // already approved before
-  // const content = getConfig('src/assets/dummy/poapproval-1.xml'); // not approved yet before
+app.route('/poapproval/1.0/').post((req, res) => {
+  // const content = getConfig('src/assets/dummy/poapproval-0.xml'); // already approved before
+  const content = getConfig('src/assets/dummy/poapproval-1.xml'); // not approved yet before
   // const content = getConfig('src/assets/dummy/poapproval-2.xml'); // rejected
   res.send(content);
 })
